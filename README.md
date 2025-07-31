@@ -9,20 +9,23 @@
 
 <!-- TOC STARTS -->
 
-- [Running the protocol](#running-the-protocol)
-  * [Networking](#networking)
-    + [Signer indices](#signer-indices)
-  * [Execution ID](#execution-id)
-  * [Auxiliary info generation](#auxiliary-info-generation)
-    + [On reusability of the auxiliary data](#on-reusability-of-the-auxiliary-data)
-  * [Distributed Key Generation (DKG)](#distributed-key-generation-dkg)
-  * [Signing](#signing)
-- [Sync API](#sync-api)
-- [HD wallets support](#hd-wallets-support)
-- [SPOF code: Key Import and Export](#spof-code-key-import-and-export)
-- [Differences between the implementation and CGGMP21](#differences-between-the-implementation-and-cggmp21)
-- [Timing attacks](#timing-attacks)
-- [Join us in Discord!](#join-us-in-discord)
+- [Threshold ECDSA based on CGGMP21 paper](#threshold-ecdsa-based-on-cggmp21-paper)
+  - [Running the protocol](#running-the-protocol)
+    - [Networking](#networking)
+      - [Signer indices](#signer-indices)
+    - [Execution ID](#execution-id)
+    - [Auxiliary info generation](#auxiliary-info-generation)
+      - [On reusability of the auxiliary data](#on-reusability-of-the-auxiliary-data)
+    - [Distributed Key Generation (DKG)](#distributed-key-generation-dkg)
+    - [Signing](#signing)
+  - [Sync API](#sync-api)
+  - [HD wallets support](#hd-wallets-support)
+  - [SPOF code: Key Import and Export](#spof-code-key-import-and-export)
+  - [Differences between the implementation and CGGMP21](#differences-between-the-implementation-and-cggmp21)
+  - [Timing attacks](#timing-attacks)
+  - [Join us in Discord!](#join-us-in-discord)
+  - [TEST](#test)
+  - [测试结果](#测试结果)
 
 <!-- TOC ENDS -->
 
@@ -265,3 +268,135 @@ Feel free to reach out to us [in Discord]!
 [in Discord]: https://discordapp.com/channels/905194001349627914/1285268686147424388
 
 <!-- cargo-rdme end -->
+
+## TEST
+
+```sh
+# 运行所有2/3阈值测试
+cargo test --package cggmp21-tests --test it -- t2n3
+
+# 运行特定曲线的所有测试
+cargo test --package cggmp21-tests --test it -- secp256k1
+
+# 运行完整流程测试（包含密钥生成、辅助信息生成、签名）
+cargo test --package cggmp21-tests --test it pipeline::full_pipeline_works::secp256k1::t2n3
+```
+
+
+## 测试结果
+```sh
+cargo test --package cggmp21-tests --test it debug_share::debug_share_example -- --nocapture
+```
+```sh
+➜ ~/Develop/code/web/github/cggmp21(m)$ cargo test --package cggmp21-tests --test it debug_share::debug_shar
+e_example -- --nocapture                cargo test --package cggmp21-tests --test it debug_share::debug_share_example -- --nocapture                cargo test --package cggmp21-tests --test it debug_share::debug_share_example -- --nocapture                cargo
+   Compiling cggmp21-tests v0.1.0 (/Users/haotian.chen/Develop/code/web/github/cggmp21/tests)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.20s
+     Running tests/it/main.rs (target/debug/deps/it-f0e4f8d7ae269261)
+
+running 1 test
+RUST_TESTS_SEED=bf5737de634b1c5a32fd72aa4ed99862539046bddeb7c0af86e60dc65b493150
+=== 2/3 阈值密钥生成 ===
+阈值 t = 2
+参与者数量 n = 3
+执行ID = [214, 250, 187, 120, 59, 239, 175, 62, 189, 30, 215, 237, 246, 8, 63, 222, 172, 243, 85, 11, 209, 109, 75, 119, 37, 63, 183, 251, 107, 180, 76, 241]
+
+=== 密钥份额信息 ===
+
+--- 参与者 0 ---
+参与者索引: 0
+秘密份额 x: NonZero(SecretScalar)
+共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+公钥份额数量: 3
+最小签名者数量: 2
+份额索引 I: [NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000001" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000002" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000003" })]
+份额验证: OK
+
+--- 参与者 1 ---
+参与者索引: 1
+秘密份额 x: NonZero(SecretScalar)
+共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+公钥份额数量: 3
+最小签名者数量: 2
+份额索引 I: [NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000001" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000002" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000003" })]
+份额验证: OK
+
+--- 参与者 2 ---
+参与者索引: 2
+秘密份额 x: NonZero(SecretScalar)
+共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+公钥份额数量: 3
+最小签名者数量: 2
+份额索引 I: [NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000001" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000002" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000003" })]
+份额验证: OK
+
+=== 份额一致性验证 ===
+参与者 0 的共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+参与者 1 的共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+参与者 2 的共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+
+✅ 所有参与者的密钥份额生成成功！
+
+=== 密钥份额详细结构 ===
+密钥份额类型: IncompleteKeyShare<Secp256k1>
+参与者索引: 0
+秘密份额: NonZero(SecretScalar)
+共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+公钥份额数量: 3
+VSS设置:
+  - 最小签名者数量: 2
+  - 份额索引: [NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000001" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000002" }), NonZero(Scalar { curve: "secp256k1", value: "0000000000000000000000000000000000000000000000000000000000000003" })]
+
+=== 导出完整私钥 ===
+方法1: 使用所有参与者的份额重构私钥
+✅ 成功重构完整私钥!
+完整私钥: SecretScalar
+重构的公钥: Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" }
+原始共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+✅ 重构的私钥验证成功!
+
+方法2: 使用部分参与者的份额重构私钥（阈值重构）
+使用参与者 0 和 1 的份额进行重构...
+✅ 成功使用阈值份额重构完整私钥!
+完整私钥: SecretScalar
+重构的公钥: Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" }
+原始共享公钥: NonZero(Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" })
+✅ 阈值重构的私钥验证成功!
+
+方法3: 尝试使用单个参与者的份额重构私钥（应该失败）
+✅ 正确失败: 单个份额不足以重构私钥
+错误信息: ReconstructError(TooFewKeyShares { len: 1, t: 2 })
+
+=== 私钥详细信息 ===
+私钥类型: SecretScalar<Secp256k1>
+私钥标量值: SecretScalar
+私钥标量: Scalar { curve: "secp256k1", value: "8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4" }
+私钥字节数组: EncodedScalar("8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4")
+私钥字节长度: 32 字节
+私钥十六进制: 8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4
+私钥十六进制(小端): d45472f49c3c9c435698e28a8b5d76f68a7a59e4bccfea5736ad8e9e10ce628d
+私钥字节数组(大端): EncodedScalar("8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4")
+私钥字节数组(小端): EncodedScalar("d45472f49c3c9c435698e28a8b5d76f68a7a59e4bccfea5736ad8e9e10ce628d")
+私钥对应的公钥: Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" }
+私钥重构成功!
+私钥可用于生成签名!
+私钥是否为非零: true
+私钥标量值(十六进制): 0x8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4
+私钥WIF格式(简化): 8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4
+=== 私钥完整信息 ===
+类型: SecretScalar<Secp256k1>
+标量值: Scalar { curve: "secp256k1", value: "8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4" }
+十六进制: 0x8d62ce109e8ead3657eacfbce4597a8af6765d8b8ae29856439c3c9cf47254d4
+字节长度: 32 字节
+公钥: Point { curve: "secp256k1", value: "03a53e97510bc4118b829adcb87b29cadc9d29c36dd204c9bd63a2a526fe3a93a1" }
+验证状态: 有效
+
+=== 安全警告 ===
+⚠️  注意：在实际应用中，重构完整私钥会破坏阈值签名的安全性!
+⚠️  只有在特殊情况下（如密钥恢复）才应该这样做!
+⚠️  重构的私钥应该安全存储，使用后立即销毁!
+test debug_share::debug_share_example ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 83 filtered out; finished in 0.05s
+
+```
