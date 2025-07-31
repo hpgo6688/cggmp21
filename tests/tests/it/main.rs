@@ -6,3 +6,4 @@ mod signing;
 mod stark_prehashed;
 mod trusted_dealer;
 mod debug_share;
+mod mpc_server_client;
