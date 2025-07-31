@@ -5,6 +5,7 @@ members = [
     "cggmp21-keygen",
     "key-share",
     "tests",
+    "mpc-server-client",
 ]
 exclude = [
     "wasm/no_std",
