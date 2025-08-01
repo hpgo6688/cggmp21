@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
 use cggmp21::{
     ExecutionId, supported_curves::Secp256k1, 
     key_share::{DirtyIncompleteKeyShare, Valid},
@@ -179,6 +180,76 @@ pub struct StoredPartialSignature {
     pub partial_signature: PartialSignature<Secp256k1>,
     pub message_hash: String, // Store as string instead of DataToSign
     pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+/// DKG Message types for interactive protocol
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum DkgMessageType {
+    /// Phase 1: Commitment broadcast
+    Commitment,
+    /// Phase 2: Share distribution (encrypted)
+    Share,
+    /// Phase 3: Verification
+    Verification,
+    /// Phase 4: Final confirmation
+    Confirmation,
+}
+
+/// DKG Message for interactive protocol
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DkgMessage {
+    pub session_id: SessionId,
+    pub from_party: PartyId,
+    pub to_party: Option<PartyId>, // None for broadcast messages
+    pub message_type: DkgMessageType,
+    pub round: u32,
+    pub data: Vec<u8>, // Serialized message data
+    pub timestamp: DateTime<Utc>,
+}
+
+/// DKG Round state
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DkgRoundState {
+    pub session_id: SessionId,
+    pub round: u32,
+    pub messages: Vec<DkgMessage>,
+    pub completed_parties: Vec<PartyId>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// DKG Session state
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DkgSessionState {
+    pub session_id: SessionId,
+    pub parties: Vec<PartyInfo>,
+    pub threshold: u16,
+    pub current_round: u32,
+    pub state: ProtocolState,
+    pub rounds: Vec<DkgRoundState>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// DKG Commitment Data
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CommitmentData {
+    pub party_id: PartyId,
+    pub threshold: u16,
+    pub total_parties: u16,
+    pub polynomial_coefficients: Vec<u64>,
+    pub execution_id: String,
+}
+
+/// DKG Share Data
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ShareData {
+    pub from_party: PartyId,
+    pub to_party: PartyId,
+    pub threshold: u16,
+    pub total_parties: u16,
+    pub share_value: u64,
+    pub execution_id: String,
 }
 
 impl SessionId {
