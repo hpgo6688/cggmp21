@@ -1,0 +1,18 @@
+language = "C"
+include_guard = "TDKG_CORE_H"
+autogen_warning = "// Auto-generated file. Do not edit manually."
+
+[defines]
+"target_os = ios" = "IOS"
+
+[export]
+prefix = "tdkg_"
+include = ["add", "multiply", "get_version", "free_string", "calculate_sum", "create_hello_message"]
+
+[export.rename]
+"add" = "add"
+"multiply" = "multiply"
+"get_version" = "get_version"
+"free_string" = "free_string"
+"calculate_sum" = "calculate_sum"
+"create_hello_message" = "create_hello_message" 

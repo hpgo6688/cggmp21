@@ -1,0 +1,34 @@
+# Dockerfile for cross-compiling iOS libraries on Apple Silicon
+FROM rust:1.70
+
+# Install iOS toolchain
+RUN apt-get update && apt-get install -y \
+    clang \
+    libclang-dev \
+    cmake \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install iOS targets
+RUN rustup target add aarch64-apple-ios
+RUN rustup target add x86_64-apple-ios
+
+# Set up cross-compilation environment
+ENV CC_aarch64_apple_ios=clang
+ENV AR_aarch64_apple_ios=ar
+ENV CFLAGS_aarch64_apple_ios="-target aarch64-apple-ios"
+
+ENV CC_x86_64_apple_ios=clang
+ENV AR_x86_64_apple_ios=ar
+ENV CFLAGS_x86_64_apple_ios="-target x86_64-apple-ios"
+
+WORKDIR /app
+
+# Copy source code
+COPY . .
+
+# Build for iOS
+RUN cargo build --release --target aarch64-apple-ios
+RUN cargo build --release --target x86_64-apple-ios
+
+# The built libraries will be in target/aarch64-apple-ios/release/ and target/x86_64-apple-ios/release/ 
