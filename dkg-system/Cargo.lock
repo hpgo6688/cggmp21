@@ -532,6 +532,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "dkg-node-ffi"
+version = "0.1.0"
+dependencies = [
+ "base64 0.21.7",
+ "bincode",
+ "cggmp21",
+ "clap",
+ "futures",
+ "gmp-mpfr-sys",
+ "hex",
+ "libc",
+ "rand",
+ "reqwest",
+ "round-based",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tokio",
+]
+
+[[package]]
 name = "educe"
 version = "0.4.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"

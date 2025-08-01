@@ -1,2 +1,2 @@
 [workspace]
-members = ["relay-server", "dkg-node"] 
+members = ["relay-server", "dkg-node", "dkg-node-ffi"] 
