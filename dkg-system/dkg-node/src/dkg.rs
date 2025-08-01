@@ -24,11 +24,11 @@ impl DkgState {
     }
 
     // 使用真正的DKG协议生成密钥共享
-    pub fn generate_real_key_shares(&mut self, total: usize) -> cggmp21::IncompleteKeyShare<Secp256k1> {
+    pub fn generate_real_key_shares(&mut self, total: usize, session_id: &str) -> cggmp21::IncompleteKeyShare<Secp256k1> {
         println!("🔄 节点 {} 正在使用真正的DKG协议生成密钥共享...", self.id);
         
-        // 使用确定性种子确保所有参与方生成相同的共享公钥
-        let session_hash = Sha256::digest(b"dkg-session");
+        // 使用session_id生成确定性种子，确保不同session生成不同公钥
+        let session_hash = Sha256::digest(session_id.as_bytes());
         let seed = u64::from_le_bytes([
             session_hash[0], session_hash[1], session_hash[2], session_hash[3],
             session_hash[4], session_hash[5], session_hash[6], session_hash[7]
@@ -112,10 +112,10 @@ impl DkgState {
         self.received_round3.len() == total - 1
     }
 
-    pub fn finalize(&mut self) -> Option<cggmp21::IncompleteKeyShare<Secp256k1>> {
+    pub fn finalize(&mut self, session_id: &str) -> Option<cggmp21::IncompleteKeyShare<Secp256k1>> {
         // 使用真正的DKG协议生成密钥共享
         let total_nodes = 3; // 假设总节点数为3
-        let key_share = self.generate_real_key_shares(total_nodes);
+        let key_share = self.generate_real_key_shares(total_nodes, session_id);
         
         // 验证公钥一致性
         if let Some(expected_pk) = &self.shared_public_key {

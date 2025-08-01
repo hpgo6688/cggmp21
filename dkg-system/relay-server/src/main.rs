@@ -39,8 +39,8 @@ async fn send_message(
 }
 
 async fn fetch_messages(
-    Path((session_id, round, id)): Path<(String, u8, u16)>,
     axum::extract::State(store): axum::extract::State<MessageStore>,
+    Path((session_id, round, id)): Path<(String, u8, u16)>,
 ) -> Json<Vec<DkgMessage>> {
     let map = store.read().await;
     let msgs = map

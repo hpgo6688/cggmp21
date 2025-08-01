@@ -151,7 +151,7 @@ async fn main() {
         println!("🔍 节点 {} 开始生成一致密钥共享...", args.id);
         let key_share = {
             let mut s = state.lock().unwrap();
-            s.finalize()
+            s.finalize(&args.session)
         };
         
         if let Some(key_share) = key_share {
